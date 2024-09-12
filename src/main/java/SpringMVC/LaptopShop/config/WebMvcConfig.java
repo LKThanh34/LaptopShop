@@ -29,5 +29,6 @@ import org.springframework.web.servlet.view.JstlView;
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
             registry.addResourceHandler("/css/**").addResourceLocations("/resources/css/");
+            registry.addResourceHandler("/js/**").addResourceLocations("/resources/js/");
         }
 }

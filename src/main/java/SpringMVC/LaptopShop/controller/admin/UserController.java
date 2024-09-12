@@ -1,4 +1,4 @@
-package SpringMVC.LaptopShop.controller;
+package SpringMVC.LaptopShop.controller.admin;
 
 
 import SpringMVC.LaptopShop.domain.User;
@@ -34,7 +34,7 @@ public class UserController {
     public String getUserPage(Model model) {
         List<User> users  = this.userService.getAllUsers();
         model.addAttribute("users1", users);
-        return "admin/user/table-user";
+        return "admin/user/show";
     }
 // bài tập
     @RequestMapping("/admin/user/{id}")
