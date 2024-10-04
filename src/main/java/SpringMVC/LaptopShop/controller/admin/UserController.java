@@ -2,11 +2,16 @@ package SpringMVC.LaptopShop.controller.admin;
 
 
 import SpringMVC.LaptopShop.domain.User;
-
+import SpringMVC.LaptopShop.service.UploandService;
 import SpringMVC.LaptopShop.service.UserService;
+
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import java.util.List;
 
@@ -14,10 +19,17 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UploandService uploandService;
+    private final PasswordEncoder passwordEncoder;
 
     public UserController(
-            UserService userService) {
+        UploandService uploandService,
+            UserService userService,
+        PasswordEncoder passwordEncoder
+        ) {
         this.userService = userService;
+        this.uploandService = uploandService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @RequestMapping("/")
@@ -45,17 +57,28 @@ public class UserController {
         return "admin/user/detail";
     }
 
-    @RequestMapping("/admin/user/create") // GET
+    @GetMapping("/admin/user/create") // GET
     public String getCreateUserPage(Model model) {
         model.addAttribute("newUser", new User());
         return "admin/user/create";
     }
 
-    @RequestMapping(value = "/admin/user/create", method = RequestMethod.POST)
-    public String createUserPage(Model model, @ModelAttribute("newUser") User hoidanit) {
+    @PostMapping(value = "/admin/user/create")
+    public String createUserPage(Model model,
+                                 @ModelAttribute("newUser") User hoidanit,
+                                 @RequestParam("file")MultipartFile file
+    ) {
+       String avatar = this.uploandService.handleSaveUploandFile(file, "avatar");
 
+       String hashPassword = this.passwordEncoder.encode(hoidanit.getPassword());
+
+        hoidanit.setAvatar(avatar);
+        hoidanit.setPassword(hashPassword);
+
+        hoidanit.setRole(this.userService.getRoleByName(hoidanit.getRole().getName()));
+        // save
         this.userService.handleSaveUser(hoidanit);
-        return "redirect:/admin/user";
+       return "redirect:/admin/user";
     }
 
     @RequestMapping("/admin/user/update/{id}") // GET

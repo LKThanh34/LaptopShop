@@ -27,6 +27,22 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    public Role getRole() {
+        return role;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
     // Quan hệ với bảng Order, mỗi người dùng có nhiều order
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
